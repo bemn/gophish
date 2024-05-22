@@ -1,3 +1,4 @@
 /gophish-data
 /mysql-data
 .env
+config.json
