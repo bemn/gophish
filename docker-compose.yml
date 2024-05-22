@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  gophish:
+    build: .
+    container_name: gophish
+    ports:
+      - "3333:3333" # Porta para a interface web do Gophish
+      - "8080:80"   # Porta para a captura de credenciais e páginas de phishing
+    volumes:
+      - ./gophish-data:/opt/gophish-data
+      - ./config.json:/opt/gophish/config.json
+    environment:
+      GOPHISH_CONFIG: /opt/gophish/config.json
+    depends_on:
+      - mysql
+      - redis
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:
+      - ./mysql-data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6379:6379"
+
+volumes:
+  gophish-data:
+  mysql-data:
